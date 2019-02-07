@@ -1,6 +1,6 @@
 import { handleAjax } from "./common.js";
 
-const { fromEvent, from, of, combineLatest } = rxjs;
+const { fromEvent, from, of, combineLatest, merge } = rxjs;
 const { map, switchMap, pluck, scan, mergeMap } = rxjs.operators;
 const { ajax } = rxjs.ajax;
 
@@ -168,7 +168,7 @@ export default class Map {
       .map(bus =>
         `
 <dd>
-  <a href="#">
+  <a href="#${bus.routeId}_${bus.routeName}">
     <strong>${bus.routeName}</strong>
     <span>${bus.regionName}</span>
     <span class="type ${getBuesType(bus.routeTypeName)}">
@@ -190,13 +190,13 @@ export default class Map {
     `.trim();
   }
 
-  constructor($map) {
+  constructor($map, search$) {
     this.manageMarker = this.manageMarker.bind(this);
 
     this.naverMap = createNaverMap($map);
     this.infowindow = createNaverInfoWindow();
 
-    const station$ = this.createDragend$().pipe(
+    const station$ = merge(search$, this.createDragend$()).pipe(
       this.mapStation,
       this.manageMarker,
       this.mapMarkerClick,

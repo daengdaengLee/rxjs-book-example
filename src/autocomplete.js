@@ -67,7 +67,7 @@ export default class AutoComplete {
       .map(bus =>
         `
 <li>
-  <a href="#">
+  <a href="#${bus.routeId}_${bus.routeName}">
     <strong>${bus.routeName}</strong>
     <span>${bus.regionName}</span>
     <div>${bus.routeTypeName}</div>
