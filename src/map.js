@@ -1,3 +1,5 @@
+import { handleAjax } from "./common.js";
+
 const { fromEvent, from, of, combineLatest } = rxjs;
 const { map, switchMap, pluck, scan, mergeMap } = rxjs.operators;
 const { ajax } = rxjs.ajax;
@@ -104,7 +106,7 @@ export default class Map {
       switchMap(coord =>
         ajax.getJSON(`/station/around/${coord.longitude}/${coord.latitude}`)
       ),
-      pluck("busStationAroundList")
+      handleAjax("busStationAroundList")
     );
   }
 
@@ -151,7 +153,7 @@ export default class Map {
         const marker$ = of(markerInfo);
         const bus$ = ajax
           .getJSON(`/bus/pass/station/${markerInfo.id}`)
-          .pipe(pluck("busRouteList"));
+          .pipe(handleAjax("busRouteList"));
 
         return combineLatest(marker$, bus$, (markerInfo, buses) => ({
           markerInfo,
